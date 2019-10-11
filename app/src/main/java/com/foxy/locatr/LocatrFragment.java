@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,7 @@ public class LocatrFragment extends Fragment {
     private static final int REQUEST_LOCATION_PERMISSION = 0;
 
     private ImageView imageView;
+    private ProgressBar progressBar;
     private GoogleApiClient client;
 
     public static LocatrFragment newInstance() {
@@ -70,6 +72,7 @@ public class LocatrFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_locatr, container, false);
         imageView = view.findViewById(R.id.image);
+        progressBar = view.findViewById(R.id.progress_bar);
         return view;
     }
 
@@ -128,6 +131,8 @@ public class LocatrFragment extends Fragment {
     }
 
     private void findImage() {
+        progressBar.setVisibility(View.VISIBLE);
+
         // Запрос на получение позиционных данных
         LocationRequest request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);  // выбор между расходом заряда и точностью запроса
@@ -154,7 +159,7 @@ public class LocatrFragment extends Fragment {
 
     // AsyncTask
     // Поиск фото, установка
-    private class SearchTask extends AsyncTask<Location, Void, Void> {
+    private class SearchTask extends AsyncTask<Location, Integer, Void> {
         private GalleryItem galleryItem;
         private Bitmap bitmap;
 
@@ -175,11 +180,13 @@ public class LocatrFragment extends Fragment {
             } catch (IOException e) {
                 Log.i(TAG, "Unable to download bitmap", e);
             }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            progressBar.setVisibility(View.GONE);
             imageView.setImageBitmap(bitmap);
         }
     }
