@@ -1,5 +1,6 @@
 package com.foxy.locatr;
 
+import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
@@ -79,6 +80,12 @@ public class FlickrFetchr {
         return downloadGalleryItems(url);
     }
 
+    // Загрузка фото по локаци
+    public List<GalleryItem> searchPhotos(Location location) {
+        String url = buildUrl(location);
+        return downloadGalleryItems(url);
+    }
+
     private List<GalleryItem> downloadGalleryItems(String url) {
         List<GalleryItem> items = new ArrayList<>();
         try {
@@ -103,6 +110,15 @@ public class FlickrFetchr {
         }
 
         return uriBuilder.build().toString();
+    }
+
+    // поисковой запрос на основе location
+    private String buildUrl(Location location) {
+        return ENDPOINT.buildUpon()
+                .appendQueryParameter("method", SEARCH_METHOD)
+                .appendQueryParameter("lat", "" + location.getLatitude())
+                .appendQueryParameter("lon", "" + location.getLongitude())
+                .build().toString();
     }
 
     private void parseItems(List<GalleryItem> items, JSONObject jsonBody) throws JSONException {
