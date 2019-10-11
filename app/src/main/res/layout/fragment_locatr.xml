@@ -15,6 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:indeterminateDrawable="@drawable/progress_bar"
+        android:indeterminateOnly="true"
         android:max="100"
         android:visibility="gone" />
 

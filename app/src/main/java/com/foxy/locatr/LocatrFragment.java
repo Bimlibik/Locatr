@@ -132,6 +132,7 @@ public class LocatrFragment extends Fragment {
 
     private void findImage() {
         progressBar.setVisibility(View.VISIBLE);
+        imageView.setImageDrawable(null);
 
         // Запрос на получение позиционных данных
         LocationRequest request = LocationRequest.create();
