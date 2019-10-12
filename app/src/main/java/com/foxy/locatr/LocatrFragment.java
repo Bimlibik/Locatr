@@ -25,7 +25,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,8 +44,12 @@ public class LocatrFragment extends SupportMapFragment {
     };
     private static final int REQUEST_LOCATION_PERMISSION = 0;
 
-    private ProgressBar progressBar;
     private GoogleApiClient client;
+    private GoogleMap map;
+
+    private Bitmap mapImage;
+    private GalleryItem mapItem;
+    private Location currentLocation;
 
     public static LocatrFragment newInstance() {
         return new LocatrFragment();
@@ -64,6 +74,15 @@ public class LocatrFragment extends SupportMapFragment {
                     }
                 })
                 .build();
+
+        // асинхронно получает объект карты
+        getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                updateUi();
+            }
+        });
     }
 
 
@@ -146,14 +165,37 @@ public class LocatrFragment extends SupportMapFragment {
         return result == PackageManager.PERMISSION_GRANTED;
     }
 
+    // масштабирование
+    private void updateUi() {
+        if (map == null || mapImage == null) {
+            return;
+        }
+
+        LatLng itemPoint = new LatLng(mapItem.getLat(), mapItem.getLon());
+        LatLng myPoint = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+        // объект, на который будет наводиться камера
+        LatLngBounds bounds = new LatLngBounds.Builder()
+                .include(itemPoint)
+                .include(myPoint)
+                .build();
+
+        // наведение камеры на объект bounds
+        int margin = getResources().getDimensionPixelSize(R.dimen.map_inset_margin);
+        CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, margin);
+        map.animateCamera(update); // обновление карты
+    }
+
     // AsyncTask
     // Поиск фото, установка
     private class SearchTask extends AsyncTask<Location, Integer, Void> {
         private GalleryItem galleryItem;
         private Bitmap bitmap;
+        private Location location;
 
         @Override
         protected Void doInBackground(Location... locations) {
+            location = locations[0];
             FlickrFetchr fetchr = new FlickrFetchr();
             List<GalleryItem> items = fetchr.searchPhotos(locations[0]);
 
@@ -175,7 +217,11 @@ public class LocatrFragment extends SupportMapFragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            mapImage = bitmap;
+            mapItem = galleryItem;
+            currentLocation = location;
 
+            updateUi();
         }
     }
 }

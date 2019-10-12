@@ -7,6 +7,8 @@ public class GalleryItem {
     private String id;
     private String url;
     private String owner;
+    private double lat;
+    private double lon;
 
     public String getCaption() {
         return caption;
@@ -34,6 +36,22 @@ public class GalleryItem {
 
     public String getOwner() {
         return owner;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 
     public void setOwner(String owner) {
