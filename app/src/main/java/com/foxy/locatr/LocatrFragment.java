@@ -20,17 +20,17 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import java.io.IOException;
 import java.util.List;
 
-public class LocatrFragment extends Fragment {
+public class LocatrFragment extends SupportMapFragment {
     private static final String TAG = "LocatrFragment";
     private static final String[] LOCATION_PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -38,7 +38,6 @@ public class LocatrFragment extends Fragment {
     };
     private static final int REQUEST_LOCATION_PERMISSION = 0;
 
-    private ImageView imageView;
     private ProgressBar progressBar;
     private GoogleApiClient client;
 
@@ -67,14 +66,6 @@ public class LocatrFragment extends Fragment {
                 .build();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_locatr, container, false);
-        imageView = view.findViewById(R.id.image);
-        progressBar = view.findViewById(R.id.progress_bar);
-        return view;
-    }
 
     @Override
     public void onStart() {
@@ -131,9 +122,6 @@ public class LocatrFragment extends Fragment {
     }
 
     private void findImage() {
-        progressBar.setVisibility(View.VISIBLE);
-        imageView.setImageDrawable(null);
-
         // Запрос на получение позиционных данных
         LocationRequest request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);  // выбор между расходом заряда и точностью запроса
@@ -187,8 +175,7 @@ public class LocatrFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            progressBar.setVisibility(View.GONE);
-            imageView.setImageBitmap(bitmap);
+
         }
     }
 }

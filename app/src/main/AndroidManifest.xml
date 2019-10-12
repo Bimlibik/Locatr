@@ -6,10 +6,10 @@
     <!--Разрешение на получение данных от GPS-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <!--Разрешение на получение данных от вышек сотовой связи или WiFi-->
+    <!-- Разрешение на получение данных от вышек сотовой связи или WiFi -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!--Разрешение на интернет-->
+    <!-- Разрешение на интернет -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -21,6 +21,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <!--The API key for Google Maps-based APIs is defined as a string resource.-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity android:name=".LocatrActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
