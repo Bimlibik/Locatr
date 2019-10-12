@@ -30,8 +30,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
@@ -171,8 +174,23 @@ public class LocatrFragment extends SupportMapFragment {
             return;
         }
 
+        // получение своих координат и координат картинки
         LatLng itemPoint = new LatLng(mapItem.getLat(), mapItem.getLon());
         LatLng myPoint = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+        // создание маркера для картинки
+        BitmapDescriptor itemBitmap = BitmapDescriptorFactory.fromBitmap(mapImage);
+        MarkerOptions itemMarker = new MarkerOptions()
+                .position(itemPoint)
+                .icon(itemBitmap);
+        // создание своего макера
+        MarkerOptions myMarker = new MarkerOptions()
+                .position(myPoint);
+
+        // удаляем лишнее, устанавливаем созданные маркеры
+        map.clear();
+        map.addMarker(itemMarker);
+        map.addMarker(myMarker);
 
         // объект, на который будет наводиться камера
         LatLngBounds bounds = new LatLngBounds.Builder()
